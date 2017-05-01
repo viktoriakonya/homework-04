@@ -801,6 +801,60 @@ ggsave("fig/trump_android_iphone.png", width = 15, height = 10, dpi = 100)
 
 
 
+# Egyezőség tesztelése
+
+# Sentiment
+android_sentiment_neg <- nrow(android[android$text_sentiment=="negative",])
+android_sentiment_poz<- nrow(android[android$text_sentiment=="positive",])
+android_sentiment_neu <- nrow(android[android$text_sentiment=="neutral",])
+
+android_sentiment_all<- c(android_sentiment_neg , android_sentiment_poz, android_sentiment_neu) 
+android_sentiment_all
+
+iphone_sentiment_neg <- nrow(iphone[iphone$text_sentiment=="negative",])
+iphone_sentiment_poz<- nrow(iphone[iphone$text_sentiment=="positive",])
+iphone_sentiment_neu <- nrow(iphone[iphone$text_sentiment=="neutral",])
+
+iphone_sentiment_all<- c(iphone_sentiment_neg , iphone_sentiment_poz, iphone_sentiment_neu) 
+
+android_sentiment_all<-as.numeric(android_sentiment_all)
+iphone_sentiment_all<-as.numeric(iphone_sentiment_all)
+
+# Semmilyen szignifikancia szint mellett nem tudjuk elvetni az egyezőség null hipotézisét
+t.test(android_sentiment_all, iphone_sentiment_all)
+t.test(android_sentiment_all, iphone_sentiment_all, paired=TRUE, var.equal = TRUE)
+
+
+# Emotion
+android_emotion_anger <- nrow(android[android$text_emotion=="anger",])
+android_emotion_disgust <- nrow(android[android$text_emotion=="disgust",])
+android_emotion_fear <- nrow(android[android$text_emotion=="fear",])
+android_emotion_joy <- nrow(android[android$text_emotion=="joy",])
+android_emotion_sadness <- nrow(android[android$text_emotion=="sadness",])
+android_emotion_suprise <- nrow(android[android$text_emotion=="suprise",])
+android_emotion_unknown <- nrow(android[android$text_emotion=="unknown",])
+
+# unknown nélkül
+android_emotion_all <- c(android_emotion_anger, android_emotion_disgust,android_emotion_fear, android_emotion_joy, android_emotion_sadness,android_emotion_suprise)
+
+
+iphone_emotion_anger <- nrow(iphone[iphone$text_emotion=="anger",])
+iphone_emotion_disgust <- nrow(iphone[iphone$text_emotion=="disgust",])
+iphone_emotion_fear <- nrow(iphone[iphone$text_emotion=="fear",])
+iphone_emotion_joy <- nrow(iphone[iphone$text_emotion=="joy",])
+iphone_emotion_sadness <- nrow(iphone[iphone$text_emotion=="sadness",])
+iphone_emotion_suprise <- nrow(iphone[iphone$text_emotion=="suprise",])
+iphone_emotion_unknown <- nrow(iphone[iphone$text_emotion=="unknown",])
+
+# unknown nélkül
+iphone_emotion_all <- c(iphone_emotion_anger, iphone_emotion_disgust,iphone_emotion_fear, iphone_emotion_joy, iphone_emotion_sadness,iphone_emotion_suprise)
+
+# 10%-os szignifikancia szint mellett el tudjuk elvetni az egyezőség null hipotézisét
+t.test(android_emotion_all, iphone_emotion_all)
+t.test(android_emotion_all, iphone_emotion_all, paired=TRUE, var.equal = TRUE)
+
+
+
 
 
 
