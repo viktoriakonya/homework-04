@@ -404,7 +404,9 @@ plot_32 <- ggplot(subset22[order(subset32$name),], aes(x = subset32$date, y = su
     axis.ticks.y=element_blank(),
     panel.grid.major = element_line( size=.1, color="grey"),
     panel.grid.minor = element_line( size=.1, color="grey") 
-  )
+    
+  )+
+  scale_y_continuous( limits = c(0,15), expand = c(0,0) )
 
 plot_32
 plot_32 + theme(legend.position="top") 
