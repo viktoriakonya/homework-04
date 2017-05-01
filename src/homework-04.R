@@ -525,6 +525,123 @@ ggsave("fig/emotion.png", width = 10, height = 5, dpi = 100)
 
 
 
+### Subsetelés az ábrákhoz
+subset1$month <- months(subset1$date)
+as.data.frame(subset1)
+View(subset1)
+
+# Subsetekre bontás sentiment szerint
+subset_sentiment <- aggregate(subset1$x, by = list(month = subset1$month, sentiment=subset1$sentiment, name=subset1$name), sum)
+View(subset_sentiment)
+
+# Sentiment külön Trump-ra és Clinton-ra
+subset_trump_sentiment <-subset(subset_sentiment, subset_sentiment$name=="Donald Trump")
+View(subset_trump_sentiment)
+subset_hillary_sentiment <- subset(subset_sentiment, subset_sentiment$name=="Hillary Clinton") 
+View(subset_hillary)
+
+# Subsetekre bontás emotion szerint
+subset_emotion <- aggregate(subset1$x, by = list(month = subset1$month, emotion=subset1$emotion, name=subset1$name), sum)
+View(subset_emotion)
+
+# Emotion szerint külön Trump-ra és Clinton-ra, kiszedtem az unknown-t
+subset_trump_emotion <-subset(subset_emotion, subset_emotion$name=="Donald Trump" & subset_emotion$emotion!="unknown")
+View(subset_trump_emotion)
+subset_hillary_emotion <- subset(subset_emotion, subset_emotion$name=="Hillary Clinton" & subset_emotion$emotion!="unknown") 
+View(subset_hillary_emotion)
+
+
+# 4.1.2. ábra : Trump sentiment
+subset_trump_sentiment$month<-factor(subset_trump_sentiment$month)
+levels(subset_trump_sentiment$month)
+subset_trump_sentiment$month = factor(subset_trump_sentiment$month,levels(subset_trump_sentiment$month)[c(4, 3,7,1,8,6,5,2,9)])
+levels(subset_trump_sentiment$month)
+
+
+trump_sentiment <- ggplot(data = subset_trump_sentiment[order(subset_trump_sentiment$month),], aes(x = subset_trump_sentiment$month, y = subset_trump_sentiment$x, group = subset_trump_sentiment$sentiment, colour = subset_trump_sentiment$sentiment)) +
+  geom_line() + geom_point() + ggtitle("Sentiment of Donalad Trump") + 
+  scale_fill_manual("Sentiment", values = c("negative" , "neutral", "positive" ))+
+  xlab("Time") + ylab("Total text") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+trump_sentiment2 <- trump_sentiment  +
+  labs(colour = "")        
+
+trump_sentiment2
+
+
+# 4.1.3. ábra : Trump emotion
+subset_trump_emotion$month<-factor(subset_trump_emotion$month)
+levels(subset_trump_emotion$month)
+subset_trump_emotion$month = factor(subset_trump_emotion$month,levels(subset_trump_emotion$month)[c(4, 3,7,1,8,6,5,2,9)])
+levels(subset_trump_sentiment$month)
+
+
+
+trump_emotion <- ggplot(data = subset_trump_emotion, aes(x = subset_trump_emotion$month, y = subset_trump_emotion$x, group = subset_trump_emotion$emotion, colour = subset_trump_emotion$emotion)) +
+  geom_line() + geom_point() + ggtitle("Emotion of Donalad Trump") + 
+  scale_fill_manual("Sentiment", values=c("anger", "disgust", "fear", "joy", "sadness", "suprise"))+
+  xlab("Time") + ylab("Total text") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+trump_emotion2<- trump_emotion  +
+  labs(colour = "")        
+trump_emotion2
+
+
+# 4.1.4. ábra : Clinton sentiment
+subset_hillary_sentiment$month<-factor(subset_hillary_sentiment$month)
+levels(subset_hillary_sentiment$month)
+subset_hillary_sentiment$month = factor(subset_hillary_sentiment$month,levels(subset_hillary_sentiment$month)[c(1,5,4,3,2,6)])
+levels(subset_hillary_sentiment$month)
+
+
+
+clinton_sentiment <- ggplot(data = subset_hillary_sentiment, aes(x = subset_hillary_sentiment$month, y = subset_hillary_sentiment$x, group = subset_hillary_sentiment$sentiment, colour = subset_hillary_sentiment$sentiment)) +
+  geom_line() + geom_point() + ggtitle("Sentiment of Hillary Clinton") + 
+  scale_fill_manual("Sentiment", values = c("negative" , "neutral", "positive" ))+
+  xlab("Time") + ylab("Total text") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+clinton_sentiment2<- clinton_sentiment  +
+  labs(colour = "")        
+clinton_sentiment2
+
+# 4.1.3. ábra : Clinton emotion
+subset_hillary_emotion$month<-factor(subset_hillary_emotion$month)
+levels(subset_hillary_emotion$month)
+subset_hillary_emotion$month = factor(subset_hillary_emotion$month,levels(subset_hillary_emotion$month)[c(1,5,4,3,2,6)])
+levels(subset_hillary_emotion$month)
+
+
+
+clinton_emotion <- ggplot(data = subset_hillary_emotion, aes(x = subset_hillary_emotion$month, y = subset_hillary_emotion$x, group = subset_hillary_emotion$emotion, colour = subset_hillary_emotion$emotion)) +
+  geom_line() + geom_point() + ggtitle("Emotion of Hillary Clinton") + 
+  scale_fill_manual("Emotion", values=c("anger", "disgust", "fear", "joy", "sadness", "suprise"))+
+  xlab("Time") + ylab("Total text") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+clinton_emotion2<-clinton_emotion  +
+  labs(colour = "") 
+clinton_emotion2
+
+# 4.1.4. ábra egyben
+
+library(gridExtra)
+
+plot_clinton_trump<-plot_grid(clinton_sentiment2, clinton_emotion2, trump_sentiment2, trump_emotion2, ncol=2, nrow=2)+
+  scale_fill_manual("Emotion")
+
+plot_clinton_trump + theme(legend.position="top") +
+  ggtitle("Sentiments and emotions of candidates")+
+  labs(colour = "") 
+
+ggsave("fig/clinton_trump_sentiment_emotion.png", width = 20, height = 10, dpi = 100)
+
+
+
+
+
 
 
 
