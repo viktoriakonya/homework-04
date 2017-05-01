@@ -639,6 +639,57 @@ plot_clinton_trump + theme(legend.position="top") +
 ggsave("fig/clinton_trump_sentiment_emotion.png", width = 20, height = 10, dpi = 100)
 
 
+# Egyezőség tesztelése
+
+# Sentiment
+clinton_sentiment_neg <- nrow(tweets[tweets$text_sentiment=="negative" & tweets$name=="Hillary Clinton",])
+clinton_sentiment_poz<- nrow(tweets[tweets$text_sentiment=="positive" & tweets$name=="Hillary Clinton",])
+clinton_sentiment_neu <- nrow(tweets[tweets$text_sentiment=="neutral" & tweets$name=="Hillary Clinton",])
+
+clinton_sentiment_all<- c(clinton_sentiment_neg , clinton_sentiment_poz, clinton_sentiment_neu) 
+
+
+trump_sentiment_neg <- nrow(tweets[tweets$text_sentiment=="negative" & tweets$name=="Donald Trump",])
+trump_sentiment_poz<- nrow(tweets[tweets$text_sentiment=="positive" & tweets$name=="Donald Trump",])
+trump_sentiment_neu <- nrow(tweets[tweets$text_sentiment=="neutral" & tweets$name=="Donald Trump",])
+
+trump_sentiment_all<- c(trump_sentiment_neg , trump_sentiment_poz, trump_sentiment_neu) 
+
+clinton_sentiment_all<-as.numeric(clinton_sentiment_all)
+trump_sentiment_all<-as.numeric(trump_sentiment_all)
+
+# Semmilyen szignifikancia szint mellett nem tudjuk elvetni az egyezőség null hipotézisét
+t.test(clinton_sentiment_all, trump_sentiment_all)
+t.test(clinton_sentiment_all, trump_sentiment_all, paired=TRUE, var.equal = TRUE)
+
+
+# Emotion
+clinton_emotion_anger <- nrow(tweets[tweets$text_emotion=="anger" & tweets$name=="Hillary Clinton",])
+clinton_emotion_disgust <- nrow(tweets[tweets$text_emotion=="disgust" & tweets$name=="Hillary Clinton",])
+clinton_emotion_fear <- nrow(tweets[tweets$text_emotion=="fear" & tweets$name=="Hillary Clinton",])
+clinton_emotion_joy <- nrow(tweets[tweets$text_emotion=="joy" & tweets$name=="Hillary Clinton",])
+clinton_emotion_sadness <- nrow(tweets[tweets$text_emotion=="sadness" & tweets$name=="Hillary Clinton",])
+clinton_emotion_suprise <- nrow(tweets[tweets$text_emotion=="suprise" & tweets$name=="Hillary Clinton",])
+clinton_emotion_unknown <- nrow(tweets[tweets$text_emotion=="unknown" & tweets$name=="Hillary Clinton",])
+
+# unknown nélkül
+clinton_emotion_all <- c(clinton_emotion_anger, clinton_emotion_disgust,clinton_emotion_fear, clinton_emotion_joy, clinton_emotion_sadness,clinton_emotion_suprise)
+
+
+trump_emotion_anger <- nrow(tweets[tweets$text_emotion=="anger" & tweets$name=="Donald Trump",])
+trump_emotion_disgust <- nrow(tweets[tweets$text_emotion=="disgust" & tweets$name=="Donald Trump",])
+trump_emotion_fear <- nrow(tweets[tweets$text_emotion=="fear" & tweets$name=="Donald Trump",])
+trump_emotion_joy <- nrow(tweets[tweets$text_emotion=="joy" & tweets$name=="Hillary trump",])
+trump_emotion_sadness <- nrow(tweets[tweets$text_emotion=="sadness" & tweets$name=="Donald Trump",])
+trump_emotion_suprise <- nrow(tweets[tweets$text_emotion=="suprise" & tweets$name=="Donald Trump",])
+trump_emotion_unknown <- nrow(tweets[tweets$text_emotion=="unknown" & tweets$name=="Donald Trump",])
+
+# unknown nélkül
+trump_emotion_all <- c(trump_emotion_anger, trump_emotion_disgust,trump_emotion_fear, trump_emotion_joy, trump_emotion_sadness,trump_emotion_suprise)
+
+# Semmilyen szignifikancia szint mellett nem tudjuk elvetni az egyezőség null hipotézisét
+t.test(clinton_emotion_all, trump_emotion_all)
+t.test(clinton_emotion_all, trump_emotion_all, paired=TRUE, var.equal = TRUE)
 
 
 
