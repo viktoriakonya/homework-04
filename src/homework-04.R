@@ -142,3 +142,22 @@ ggplot(sub2, aes(x = sub2$Candidate, y = sub2$Tweet, fill = Language)) +
         panel.background = element_blank(), axis.line = element_line("white"))
 
 ggsave("fig/tweet2.png", width = 7, height = 5, dpi = 100)
+
+
+
+# ------------------------------------------------------------------------------
+# 2.3. Feladat
+
+# Függvény meghívása
+source("src/homework-04-functions.R")
+
+#num_tweets()
+
+# Clinton első 10
+num_tweets("Hillary Clinton", 10)
+
+# Trump első 10
+num_tweets("Donald Trump", 15)
+
+# Ez egy helytelen név lesz
+num_tweets("Helytelen Név", 10)
