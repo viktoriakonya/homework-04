@@ -171,9 +171,6 @@ num_tweets("Helytelen Név", 10)
 
 # 3. Feladat
 
-
-# 3. Feladat -------------------------------------------------------------------
-
 rm(list=ls(all=TRUE))
 
 ### dataset behívása
@@ -443,6 +440,107 @@ plot_egyben2 + theme(legend.position="top") +
   ggtitle("Candidate mentions, by subject")
 
 ggsave("fig/hiphop3.png", width = 20, height = 5, dpi = 100)
+
+
+
+
+################################################################################
+--------------------------------------------------------------------------------
+################################################################################
+
+# 4. Feladat
+
+rm(list=ls(all=TRUE))
+
+
+# Adatok beolvasása
+tweets <- read.csv2(file = "data/clinton_trump_tweets.csv")
+View(tweets)
+
+tweets <- as.data.frame(tweets)
+levels(tweets$time)
+
+# Dátummá alakítás
+Sys.setlocale(category = "LC_TIME", locale="") 
+Sys.setlocale("LC_ALL","English")
+
+tweets$date <- strsplit(as.character(tweets$time), split = "T") 
+tweets$date[[1]][[1]]
+tweets$date = as.Date(tweets$time)
+class(tweets$date)
+tweets$date_month <- months(tweets$date)
+
+# Nevek átírása
+
+tweets$name <- c()
+for (i in 1:length(tweets$handle)){
+  if (tweets$handle[i]=="realDonaldTrump"){
+    tweets$name[i]="Donald Trump"}
+  else if (tweets$handle[i]=="HillaryClinton"){
+    tweets$name[i]="Hillary Clinton"}
+}
+
+# Aggregálás
+tweets$num <- c(1)
+# 3.1. ábrához
+subset1 <- aggregate(tweets$num, by = list(date = tweets$date, name=tweets$name, sentiment=tweets$text_sentiment, emotion=tweets$text_emotion), sum)
+subset1
+
+
+# 4.1. Ábrák
+# 4.1.1. ábra : sentiment szerint
+library(ggplot2)
+p1<-ggplot(subset1, aes(x = subset1$sentiment, y = subset1$x, fill = subset1$name)) +
+  scale_fill_manual("", values = c("Donald Trump" = "red2", "Hillary Clinton" = "dodgerblue4" ))+
+  geom_bar(stat = "identity", position = position_dodge()) +
+  theme(
+    axis.title.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.title.y=element_blank(),
+    axis.ticks.y=element_blank())
+
+p1 + theme(legend.position="top") +
+  ggtitle("Sentiment of texts")+
+  theme(legend.position="top") 
+
+ggsave("fig/sentiment.png", width = 8, height = 5, dpi = 100)
+
+# 4.1.1. ábra : emotion szerint
+p2<-ggplot(subset1, aes(x = subset1$emotion, y = subset1$x, fill = subset1$name)) +
+  scale_fill_manual("", values = c("Donald Trump" = "red2", "Hillary Clinton" = "dodgerblue4" ))+
+  geom_bar(stat = "identity", position = position_dodge()) +
+  theme(
+    axis.title.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.title.y=element_blank(),
+    axis.ticks.y=element_blank())
+
+p2 + theme(legend.position="top") +
+  ggtitle("Emotion of texts")+
+  theme(legend.position="top")
+
+ggsave("fig/emotion.png", width = 10, height = 5, dpi = 100)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
