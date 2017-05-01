@@ -691,10 +691,109 @@ trump_emotion_all <- c(trump_emotion_anger, trump_emotion_disgust,trump_emotion_
 t.test(clinton_emotion_all, trump_emotion_all)
 t.test(clinton_emotion_all, trump_emotion_all, paired=TRUE, var.equal = TRUE)
 
+# ---------------------------------------------------------------------------------
+
+# 4.2. Feladat
+library(stringr)
+library(dplyr)
+
+android <- as.data.frame(tweets %>%
+                           filter(str_detect(tweets$source_url, "android")))
+
+iphone <- tweets %>%
+  filter(str_detect(tweets$source_url, "iphone"))
 
 
 
+sub_android_trump <-subset(android, android$name=="Donald Trump")
+sub_iphone_trump <-subset(iphone, iphone$name=="Donald Trump")
+View(sub_android_trump)
 
+
+# Aggregálás
+android$num <- c(1)
+iphone$num<- c(1)
+
+# Subset a sentiment-re, android
+sub_sent_android <- aggregate(sub_android_trump$num, by = list(name=sub_android_trump$name, sentiment=sub_android_trump$text_sentiment), sum)
+View(sub_sent_android)
+
+# Subset a sentiment-re, iphone
+sub_sent_iphone <- aggregate(sub_iphone_trump$num, by = list(name=sub_iphone_trump$name, sentiment=sub_iphone_trump$text_sentiment), sum)
+View(sub_sent_iphone)
+
+# Subset a emotion-ra, android
+sub_emo_android <- aggregate(sub_android_trump$num, by = list(name=sub_android_trump$name, emotion=sub_android_trump$text_emotion), sum)
+View(sub_emo_android)
+
+# Subset a sentiment-re, iphone
+sub_emo_iphone <- aggregate(sub_iphone_trump$num, by = list(name=sub_iphone_trump$name, emotion=sub_iphone_trump$text_emotion), sum)
+
+View(sub_emo_iphone)
+
+
+
+# Ábra, sentiment
+
+ggplot(data = sub_sent_android, aes(x = sub_sent_android$sentiment)) + 
+  geom_bar(stat = "identity", fill = "red") +
+  ggtitle("Count of diamond cuts") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+p1<-ggplot(data = sub_sent_android, aes(x = sub_sent_android$sentiment, y = sub_sent_android$x)) + 
+  geom_bar(stat = "identity", fill = "blue") +
+  ggtitle("Android text sentiments") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.title.y=element_blank(),
+        axis.title.x=element_blank()
+  )
+p1
+
+p2<-ggplot(data = sub_sent_iphone, aes(x = sub_sent_iphone$sentiment, y = sub_sent_iphone$x)) + 
+  geom_bar(stat = "identity", fill = "grey") +
+  ggtitle("Iphone text sentiments") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.title.y=element_blank(),
+        axis.title.x=element_blank()
+  )
+
+p2
+
+
+p3<-ggplot(data = sub_emo_android, aes(x = sub_emo_android$emotion, y = sub_emo_android$x)) + 
+  geom_bar(stat = "identity", fill = "blue") +
+  ggtitle("Android text emotions") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.title.y=element_blank(),
+        axis.title.x=element_blank()
+  )
+
+
+p3
+
+p4<- ggplot(data = sub_emo_iphone, aes(x = sub_emo_iphone$emotion, y = sub_emo_iphone$x)) + 
+  geom_bar(stat = "identity", fill = "grey") +
+  ggtitle("Iphone text emotions") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank()
+  )
+
+p4
+
+
+# Egyben
+p14<-plot_grid(p1, p2, p3, p4,  ncol=2, nrow=2, 
+               label_size=12, align="hv")
+
+p14
+p14 + theme(legend.position="top") +
+  ggtitle("Text sentiments and amotions by device type")
+
+
+
+ggsave("fig/trump_android_iphone.png", width = 15, height = 10, dpi = 100)
 
 
 
